@@ -1,0 +1,7 @@
+Data collection/cache*
+Data collection/log/
+Data collection/img-ns/
+Data collection/videos/
+*.idea
+*.tar.gz
+*.pyc
