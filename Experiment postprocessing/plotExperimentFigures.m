@@ -1,0 +1,2 @@
+data = loadRealExperimentData(struct('datetime',{'2017-10-01 02-38-08'}, 'ch','80'));
+figure; plot(data.a_UAV_orig.Z.t, data.a_UAV_orig.Z.measured, 'g', 'LineWidth',2); hold on; plot(data.a_UAV.Z.t, data.a_UAV.Z.measured, 'r', 'LineWidth',2); plot(data.a_cam.Z.t, data.a_cam.Z.measured, 'b', 'LineWidth',2); legend('a_{UAV},raw', 'a_{UAV},filt', 'a_{cam}');
