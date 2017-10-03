@@ -104,7 +104,7 @@ class WorkerDrone:
 
 	MAX_INTERVAL_FOR_VEL_ESTIMATION = 0.5  # Max time in seconds between 2 consecutive position updates for us to estimate the velocity (as a difference of pos over time)
 	VEL_ALPHA = 0.9
-	DERIV_FILT_WIN_SIZE = 11
+	DERIV_FILT_WIN_HALF_SIZE = 11
 	DERIV_FILT_POLY_ORDER = 2
 
 	def __init__(self, link_uri, experiment_start_datetime):
@@ -203,8 +203,8 @@ class WorkerDrone:
 			dt = (t_frame - self.cf_curr_pos_t).total_seconds()
 			if dt < self.MAX_INTERVAL_FOR_VEL_ESTIMATION:
 				# self.cf_curr_vel = self.VEL_ALPHA * self.cf_curr_vel + (1 - self.VEL_ALPHA) * (new_pos - self.cf_curr_pos) / dt
-				self.cf_curr_vel = plot_tools.DerivativeHelper.differentiate(self.cf_past_pos, self.cf_past_pos_t, win_size=self.DERIV_FILT_WIN_SIZE, poly_order=self.DERIV_FILT_POLY_ORDER, deriv=1)
-				self.cf_curr_acc = plot_tools.DerivativeHelper.differentiate(self.cf_past_pos, self.cf_past_pos_t, win_size=self.DERIV_FILT_WIN_SIZE, poly_order=self.DERIV_FILT_POLY_ORDER, deriv=2)
+				self.cf_curr_vel = plot_tools.DerivativeHelper.differentiate(self.cf_past_pos, self.cf_past_pos_t, win_half_size=self.DERIV_FILT_WIN_HALF_SIZE, poly_order=self.DERIV_FILT_POLY_ORDER, deriv=1)
+				self.cf_curr_acc = plot_tools.DerivativeHelper.differentiate(self.cf_past_pos, self.cf_past_pos_t, win_half_size=self.DERIV_FILT_WIN_HALF_SIZE, poly_order=self.DERIV_FILT_POLY_ORDER, deriv=2)
 				self.experiment_log.update(vX_cam=self.cf_curr_vel[0], vY_cam=self.cf_curr_vel[1], vZ_cam=self.cf_curr_vel[2], aX_cam=self.cf_curr_acc[0], aY_cam=self.cf_curr_acc[1], aZ_cam=self.cf_curr_acc[2], timestamp=t_frame)
 				# self.send_cf_dr_update(True, self.cf_curr_vel[0], self.cf_curr_vel[1], self.cf_curr_vel[2], self.cnt_iteration)
 				str_debug_vel = "vx={v[0]:.2f}m/s, vy={v[1]:.2f}m/s, vz={v[2]:.2f}m/s".format(v=self.cf_curr_vel)
@@ -333,14 +333,14 @@ class Spotter:
 	SETTINGS_SEPARATOR = UvcCapture.SETTINGS_SEPARATOR  # We save files in a csv type of way
 	CAM_FOCAL_LENGTH_IN_PX = 1250.0
 	CF_RADIUS_IN_M = 0.02
-	WORKER_FIXED_DEPTH_IN_M = 1.00 # Write here the depth in m at which the user is from the camera
 
-	def __init__(self, bool_world_coords_pattern=False):
+	def __init__(self, worker_fixed_depth_in_m=1.00, bool_world_coords_pattern=False):
 		self.t_start = self.t_frame = self.t_last_frame = datetime.now()
 		self.t_events = []
 		self.EXPERIMENT_START_DATETIME = str(self.t_start)[:-7].replace(':', '-')
 		self.VIDEO_FOLDER = "img-ns/{}".format(self.EXPERIMENT_START_DATETIME)
 		self.workers = []
+		self.WORKER_FIXED_DEPTH_IN_M = worker_fixed_depth_in_m
 		self.kb_controls_which_cf = -1
 		self.window_for_kb_input = None
 		self.bool_world_coords_pattern = bool_world_coords_pattern
@@ -660,8 +660,7 @@ class Spotter:
 		if img_coords is None:
 			return None
 
-		depth_in_m = Spotter.CAM_FOCAL_LENGTH_IN_PX * Spotter.CF_RADIUS_IN_M / img_coords[2]
-		depth_in_m = Spotter.WORKER_FIXED_DEPTH_IN_M
+		depth_in_m = self.WORKER_FIXED_DEPTH_IN_M if True else Spotter.CAM_FOCAL_LENGTH_IN_PX * Spotter.CF_RADIUS_IN_M / img_coords[2]
 		cam_coords = auxV.img_to_cam_coords(np.hstack((img_coords[0:2], depth_in_m)), self.video_capture.camera_matrix, self.video_capture.dist_coefs)
 		world_coords = auxV.cam_to_world_coords(cam_coords, self.world_to_camera_transf)
 		return np.array([1, -1, -1]) * world_coords  # Flip y and z axes sign to convert world->cf coords
@@ -877,5 +876,5 @@ class Spotter:
 
 
 if __name__ == '__main__':
-	s = Spotter(bool_world_coords_pattern=False)
+	s = Spotter(worker_fixed_depth_in_m=1.00, bool_world_coords_pattern=False)
 	s.run_experiment(1)
