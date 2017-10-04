@@ -623,7 +623,7 @@ class Spotter:
 					spotter_camera_matrix=self.video_capture.camera_matrix, spotter_dist_coefs=self.video_capture.dist_coefs, spotter_frame_rate=self.video_capture.frame_rate, spotter_frame_size=self.video_capture.frame_size,
 					spotter_world_to_camera_transf=self.world_to_camera_transf, spotter_F=self.CAM_FOCAL_LENGTH_IN_PX, spotter_HSV_thresh_min=self.cv_HSV_thresh_min, spotter_HSV_thresh_max=self.cv_HSV_thresh_max,
 					worker_max_interval_for_vel_estimation=w.MAX_INTERVAL_FOR_VEL_ESTIMATION, worker_vel_alpha=w.VEL_ALPHA,
-					worker_deriv_filt_win_size=w.DERIV_FILT_WIN_SIZE, worker_deriv_filt_poly_order=w.DERIV_FILT_POLY_ORDER)
+					worker_deriv_filt_win_half_size=w.DERIV_FILT_WIN_HALF_SIZE, worker_deriv_filt_poly_order=w.DERIV_FILT_POLY_ORDER)
 			save_logs = self.fly_cf()  # And finally fly the CF
 		except:
 			logging.exception("Shutting down due to an exception =( See details below:")
