@@ -400,6 +400,7 @@ class Spotter:
 		sdl2.ext.init()
 		self.window_for_kb_input = sdl2.ext.Window("Window to receive keyboard input", size=(400, 300))
 		self.window_for_kb_input.show()
+		sdl2.ext.fill(self.window_for_kb_input.get_surface(), sdl2.ext.Color(255,0,0))
 
 	def save_color_thresh_settings(self, HSV_min, HSV_max, file_name=COLOR_THRESH_SETTINGS_FILE, sep=SETTINGS_SEPARATOR):
 		"""
@@ -542,6 +543,7 @@ class Spotter:
 				if link_uri is None and isinstance(connect_to, list) and i[0] in connect_to:  # If we provided a list, look for the first appearance among available interfaces
 					link_uri = i[0]  # Save the URI of this interface
 					connect_to.remove(link_uri)  # And remove it from the list so we don't try to connect again
+					break
 			if isinstance(connect_to, int):  # If connect_to is a number, choose first available link
 				link_uri = available_links[0][0]
 
@@ -718,10 +720,13 @@ class Spotter:
 				if '0' <= key <= '9': continue
 				key = key.lower()  # Convert to lowercase so we don't have to worry about different cases
 
-				if key == 'x':
+				if key=='s' or key=='e' or key=='x':
 					for w in self.workers:
-						w.experiment_running = not w.experiment_running
+						w.experiment_running = True if key=='s' else False if key=='e' else not w.experiment_running
 						w.experiment_log.update(experiment_running=w.experiment_running)
+						self.window_for_kb_input.title = "'{}' -> experiment {} running, at t={}".format(key, 'IS' if w.experiment_running else 'is NOT', str(datetime.now().time())[:-3])
+						sdl2.ext.fill(self.window_for_kb_input.get_surface(), sdl2.ext.Color(0,255,0) if w.experiment_running else sdl2.ext.Color(255,0,0))
+						w.cf_str_status = "Exp {}".format('RUNNING' if w.experiment_running else 'NOT running')
 				else:  # Any other key ends the experiment
 					for w in self.workers:
 						w.cf_radio_connected = False
@@ -876,5 +881,5 @@ class Spotter:
 
 
 if __name__ == '__main__':
-	s = Spotter(worker_fixed_depth_in_m=1.00, bool_world_coords_pattern=False)
-	s.run_experiment(1)
+	s = Spotter(worker_fixed_depth_in_m=1.50, bool_world_coords_pattern=False)
+	s.run_experiment(['radio://0/80/250K'])
