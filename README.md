@@ -29,6 +29,7 @@ It may take up to 1h to compile and install depending on your computer. Google i
 Our UIs (user interfaces) are built on top of [Qt5](http://doc.qt.io/qt-5/qt5-intro.html), which is a cross-platform GUI tool. As of Dec 4, 2016 I'm using Qt 5.7. It can also be installed through Homebrew on Mac by typing:
 ```sh
 brew install qt5
+brew install PyQt5
 ```
 Note that this step may also take a long time.
 
