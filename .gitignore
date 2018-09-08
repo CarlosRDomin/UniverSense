@@ -6,3 +6,5 @@ Data collection/videos/
 *.tar.gz
 *.pyc
 *.m~
+.DS_Store
+
