@@ -23,9 +23,11 @@ void setupHostName() {	// Initialize hostName
 
 void setupWiFi() {	// Initialization routine for WiFi connection
 	setupHostName();
+#if (!USE_SERIAL_INSTEAD_OF_WIFI)
 	setupAP();
 	loadWLANConfig();	// Load settings from EEPROM like which network we want to connect to
 	connectToWLAN();	// And then try to connect to it
+#endif
 }
 
 void setupAP() {	// Configures softAP
@@ -94,7 +96,7 @@ void loadWLANConfig() {	// Load WLAN credentials from EEPROM
 	if (String(ok) != strWlanConfigOk) {
 		loadDefaultWiFiConfig();
 	}
-	
+
 	String strWlanIPinfo = (!wlanStaticIP? "Dynamic IP" : ("IP: " + wlanMyIP.toString() + "\n\tGateway: " + wlanGateway.toString() + "\n\tMask: " + wlanMask.toString()));
 	consolePrintF("Recovered WLAN credentials:\n\tSSID: %s\n\tPass: %s\n\t%s\n", strlen(wlanSSID)>0? wlanSSID:CF("<No SSID>"), strlen(wlanPass)>0? wlanPass:CF("<No password>"), strWlanIPinfo.c_str());
 
@@ -126,7 +128,9 @@ void saveWLANconfig() {	// Save WLAN credentials to EEPROM
 }
 
 void processWiFi() {	// "WiFi.loop()" function: tries to reconnect to known networks if haven't been able to do so for the past WIFI_T_RECONNECT ms and createWiFiAP == false
+#if (!USE_SERIAL_INSTEAD_OF_WIFI)
 	if (!WiFi.isConnected() && curr_time>tNextWiFiReconnectAttempt && giveUpOnWLAN<2) {
 		connectToWLAN();// If we haven't been able to successfully connect to the WLAN, retry after tNextWiFiReconnectAttempt
 	}
+#endif
 }

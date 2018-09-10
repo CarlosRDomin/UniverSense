@@ -39,10 +39,10 @@ namespace BNO055 {
 
 		// Init sensor
 		if (!bno.begin()) {
-			consolePrintf("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!\n");
+			consolePrintF("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!\n");
 			while(1);
 		} else {
-			consolePrintf("Connected to the BNO055!\n");
+			consolePrintF("Connected to the BNO055!\n");
 		}
 
 		// Wait for boot and init sensor
@@ -87,13 +87,13 @@ namespace BNO055 {
 		dataArray.data_y[dataArray.data_y_count++] = v.y();
 		dataArray.data_z[dataArray.data_z_count++] = v.z();
 	}
-	
+
 	void addReadingToXYZArray(IoT_pairing_XYZArray & xyzArray, imu::Vector<3> const & v) {
 		xyzArray.x[xyzArray.x_count++] = v.x();
 		xyzArray.y[xyzArray.y_count++] = v.y();
 		xyzArray.z[xyzArray.z_count++] = v.z();
 	}
-	
+
 	void addReadingToQuatArray(IoT_pairing_QuatArray & quatArray, imu::Quaternion const & q) {
 		quatArray.w[quatArray.w_count++] = q.w();
 		quatArray.x[quatArray.x_count++] = q.x();
@@ -146,7 +146,11 @@ namespace BNO055 {
 			// Block until buffer gets full and is ready to be sent
 			if (xSemaphoreTake(semaphoreSendSensorData, 0) == pdTRUE) {
 				FilledProtoBuf encodedMsg = protoEncoder.encodeMsg(&dataBlocks[!currDataBlock]);	// Encode the proto message
-				wsSensorData.binaryAll((const char*)encodedMsg.buf, encodedMsg.len);				// And send it
+				if (USE_SERIAL_INSTEAD_OF_WIFI) {													// And send it
+					Serial.write(encodedMsg.buf, encodedMsg.len);
+				} else {
+					wsSensorData.binaryAll((const char*)encodedMsg.buf, encodedMsg.len);
+				}
 			}
 		}
 	}

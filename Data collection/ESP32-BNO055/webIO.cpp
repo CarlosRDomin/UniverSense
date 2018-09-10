@@ -89,9 +89,11 @@ void setupOTA() {	// Setup Arduino's OTA (to upload new firmware through their I
 
 void setupWebIO() {	// Initializes mDNS, HTTP server, webSockets and OTA
 	setupFileSystem();
+#if (!USE_SERIAL_INSTEAD_OF_WIFI)
 	setupMDNS();
 	setupWebServer();
 	setupOTA();
+#endif
 }
 
 
@@ -141,7 +143,7 @@ void webServerWLANscan(AsyncWebServerRequest* request) {	// Handles secret HTTP 
 		"\"nets\":[");
 	int n = WiFi.scanComplete();
 
-	consolePrintf("Scanning WiFi... n=%d\n", n);
+	consolePrintF("Scanning WiFi... n=%d\n", n);
 	if (n == -2) {	// Scan not triggered
 		WiFi.scanNetworks(true);	// Trigger a scan
 	} else if (n>=0) {
@@ -199,7 +201,7 @@ void onWsEvent(AsyncWebSocket* server, AsyncWebSocketClient* client, AwsEventTyp
 		consolePrintF("[WebSocket '%s'] ClientId %u (%s:%d) disconnected!\n", server->url(), client->id(), client->remoteIP().toString().c_str(), client->remotePort());
 		break;
 	case WS_EVT_ERROR:
-    	consolePrintf("[WebSocket '%s'] ClientId %u error(%u): %s\n", server->url(), client->id(), *((uint16_t*)arg), (char*)data);
+    	consolePrintF("[WebSocket '%s'] ClientId %u error(%u): %s\n", server->url(), client->id(), *((uint16_t*)arg), (char*)data);
     	break;
 	case WS_EVT_DATA:
 		if(info->opcode == WS_TEXT) {
@@ -238,7 +240,9 @@ void processWebIO() {	// "webIO.loop()" function: handle incoming OTA connection
 	static uint32_t last_t_sec = 0;
 	if (t_sec != last_t_sec) {	// Every second, log that we are alive
 		last_t_sec = t_sec;
-		consolePrintF("Still alive (t=%3d:%02d'%02d\"); HEAP: %5d B\n", t_hr, t_min, t_sec, ESP.getFreeHeap());
+		#if (!USE_SERIAL_INSTEAD_OF_WIFI)	// If we're collecting data through serial, don't print time
+			consolePrintF("Still alive (t=%3d:%02d'%02d\"); HEAP: %5d B\n", t_hr, t_min, t_sec, ESP.getFreeHeap());
+		#endif
 	}
 
 	if (shouldReboot) ESP.restart();	// AsyncWebServer doesn't suggest rebooting from async callbacks, so we set a flag and reboot from here :)
