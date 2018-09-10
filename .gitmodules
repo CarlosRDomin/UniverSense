@@ -13,3 +13,6 @@
 [submodule "Adafruit_Sensor"]
 	path = Data collection/ESP32-BNO055/arduino-submodules/libraries/Adafruit_Sensor
 	url = https://github.com/adafruit/Adafruit_Sensor.git
+[submodule "ESPAsyncWebServer"]
+	path = Data collection/ESP32-BNO055/arduino-submodules/libraries/ESPAsyncWebServer
+	url = https://github.com/me-no-dev/ESPAsyncWebServer.git

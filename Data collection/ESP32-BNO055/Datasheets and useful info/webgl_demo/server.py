@@ -34,13 +34,13 @@ import time
 
 from flask import *
 
-####from Adafruit_BNO055 import BNO055
+from Adafruit_BNO055 import BNO055
 
 
 # Create and configure the BNO sensor connection.  Make sure only ONE of the
 # below 'bno = ...' lines is uncommented:
 # Raspberry Pi configuration with serial UART and RST connected to GPIO 18:
-####bno = BNO055.BNO055(serial_port='/dev/cu.SLAB_USBtoUART', rst=18)
+bno = BNO055.BNO055(serial_port='/dev/serial0', rst=18)
 # BeagleBone Black configuration with default I2C connection (SCL=P9_19, SDA=P9_20),
 # and RST connected to pin P9_12:
 #bno = BNO055.BNO055(rst='P9_12')
@@ -58,12 +58,12 @@ CALIBRATION_FILE = 'calibration.json'
 # function.  Don't change these without consulting section 3.4 of the datasheet.
 # The default axes mapping below assumes the Adafruit BNO055 breakout is flat on
 # a table with the row of SDA, SCL, GND, VIN, etc pins facing away from you.
-####BNO_AXIS_REMAP = { 'x': BNO055.AXIS_REMAP_X,
-####                   'y': BNO055.AXIS_REMAP_Z,
-####                   'z': BNO055.AXIS_REMAP_Y,
-####                   'x_sign': BNO055.AXIS_REMAP_POSITIVE,
-####                   'y_sign': BNO055.AXIS_REMAP_POSITIVE,
-####                   'z_sign': BNO055.AXIS_REMAP_NEGATIVE }
+BNO_AXIS_REMAP = { 'x': BNO055.AXIS_REMAP_X,
+                   'y': BNO055.AXIS_REMAP_Z,
+                   'z': BNO055.AXIS_REMAP_Y,
+                   'x_sign': BNO055.AXIS_REMAP_POSITIVE,
+                   'y_sign': BNO055.AXIS_REMAP_POSITIVE,
+                   'z_sign': BNO055.AXIS_REMAP_NEGATIVE }
 
 
 # Create flask application.
@@ -87,7 +87,6 @@ def read_bno():
     latest BNO orientation, etc. state.  Must be run in its own thread because
     it will never return!
     """
-    return ####
     while True:
         # Grab new BNO sensor readings.
         temp = bno.read_temp()
@@ -144,7 +143,6 @@ def start_bno_thread():
     # See this SO question for more context:
     #   http://stackoverflow.com/questions/24617795/starting-thread-while-running-flask-with-debug
     global bno_thread
-    return ####
     # Initialize BNO055 sensor.
     if not bno.begin():
         raise RuntimeError('Failed to initialize BNO055!')

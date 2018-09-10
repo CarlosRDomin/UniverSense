@@ -15,7 +15,7 @@ Will Dickson will@iorodeo.com
 Peter Polidoro polidorop@janelia.hhmi.org
 
 Modified by:
-Carlos Ruiz carlos@aifi.io (carlos.r.domin@gmail.com)
+Carlos Ruiz carlosrd@cmu.edu (carlos.r.domin@gmail.com)
 """
 
 import sys
