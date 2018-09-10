@@ -3,7 +3,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function data = loadRealExperimentData(logInfo, logFolder, derivPolyOrder, derivWinSize, movingAvgFiltWinSize)
-	if nargin<2 || isempty(logFolder), logFolder = [fileparts(mfilename('fullpath')) '/../../../Data collection/log/' logInfo.ch]; end
+	if nargin<2 || isempty(logFolder), logFolder = [fileparts(mfilename('fullpath')) '/../../../Data collection/log/' logInfo(1).ch]; end
 	if nargin<3 || isempty(derivPolyOrder), derivPolyOrder = 2; end
 	if nargin<4 || isempty(derivWinSize), derivWinSize = 21; end
 	if nargin<5 || isempty(movingAvgFiltWinSize), movingAvgFiltWinSize = 30; end
