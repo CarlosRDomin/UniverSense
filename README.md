@@ -1,8 +1,8 @@
 # HotMobile '18 - IoT MultiModal Pairing README
 
-> This repository contains all the code used for our 2018 HotMobile paper submission: "IoT MultiModal Pairing" (temporal placeholder).
+> This repository contains all the code used for our 2018 HotMobile paper submission: ["UniverSense: IoT Device Pairing through Heterogeneous Sensing Signals"](https://www.andrew.cmu.edu/user/cruizdom/papers/HotMobile18-UniverSense.pdf).
 
-> NOTE: This repository was forked from [SensorFly Swarm](https://github.com/CarlosRDomin/SensorFlySwarm) and might have some unnecessary extra stuff or be missing some details, refer to the original repo if needed :P
+> NOTE: This repository was forked from [SensorFly Swarm](https://github.com/CarlosRDomin/SensorFlySwarm) for IMU data collection and might have some unnecessary extra stuff or be missing some details, refer to the original repo if needed :P
 
 ## Requirements
 I may have forgotten to include some of the requirements in this list, will update if necessary. Basic requirements are:
